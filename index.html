@@ -29,6 +29,7 @@ td{border-bottom:1px solid #202020}tr:nth-child(even) td{background:#0c0c0c66}tr
 tr.dim td{color:var(--muted)}th.t,td.t{text-align:left!important}
 .scroll{overflow-x:auto}.neg{color:var(--red)!important}.pos{color:var(--green)!important}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.ctip{position:fixed;z-index:999;pointer-events:none;background:#111;border:1px solid #e8b923;border-radius:.6rem;padding:8px 10px;font:12px Inter,sans-serif;color:#e5e5e5;box-shadow:0 8px 24px #000a;display:none;min-width:150px}.ctip b{display:block;color:#e8b923;margin-bottom:4px;font-size:13px}.ctip div{display:flex;justify-content:space-between;gap:14px}.ctip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}.ctip .tt{border-top:1px solid #333;margin-top:4px;padding-top:4px;font-weight:600}.chartbox .hz{fill:transparent;cursor:pointer}.chartbox .hz:hover,.chartbox .hz.on{fill:#ffffff0d}
 .chartbox svg{width:100%;height:auto;display:block}.chartbox text{fill:#a3a3a3;font:11px Inter}
 .lg{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
 #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:9}
@@ -90,14 +91,26 @@ function table(id,head,rows,foot){const h='<table><thead><tr>'+head.map((x,i)=>`
 const L=s=>`<td class="t">${s}</td>`;
 function card(l,v,s,c){return `<div class="card fx-in"><div class="l">${l}</div><div class="v ${c||''}">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`}
 const PAL=['#e8b923','#f97316','#38bdf8','#22c55e','#a855f7','#ef4444','#14b8a6','#eab308','#ec4899','#84cc16','#6366f1','#f43f5e'];
+const TIP={};
+function hz(id,labels,x0,bw,pt,h,rows){TIP[id]={labels,rows};return labels.map((lb,i)=>`<rect class="hz" data-c="${id}" data-i="${i}" x="${x0+i*bw}" width="${bw}" y="${pt}" height="${h}"></rect>`).join('')}
+(function(){const t=document.createElement('div');t.className='ctip';document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(t));let cur=null;
+ const show=(r,e)=>{const d=TIP[r.dataset.c],i=+r.dataset.i;if(!d)return;if(!t.isConnected)document.body.appendChild(t);if(cur&&cur!==r)cur.classList.remove('on');cur=r;r.classList.add('on');
+  t.innerHTML='<b>'+d.labels[i]+'</b>'+d.rows.map(x=>{const v=x.v[i];return `<div class="${x.tt?'tt':''}"><span><i style="background:${x.c}"></i>${x.k}</span><span>${v==null?'—':x.f(v)}</span></div>`}).join('');
+  t.style.display='block';const W=t.offsetWidth,H=t.offsetHeight;let X=e.clientX+14,Y=e.clientY+14;if(X+W>innerWidth-6)X=e.clientX-W-14;if(Y+H>innerHeight-6)Y=e.clientY-H-14;t.style.left=Math.max(6,X)+'px';t.style.top=Math.max(6,Y)+'px'};
+ const hide=()=>{t.style.display='none';if(cur)cur.classList.remove('on');cur=null};
+ document.addEventListener('mousemove',e=>{const r=e.target.closest&&e.target.closest('.hz');r?show(r,e):(cur&&hide())});
+ document.addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('.hz');if(r){const b=r.getBoundingClientRect();show(r,{clientX:e.clientX||b.x+b.width/2,clientY:e.clientY||b.y})}else hide()});
+ addEventListener('scroll',hide,{passive:true})})();
 function stack(id,labels,series){const W=620,H=300,pl=56,pb=26,pt=10;const tot=labels.map((_,i)=>sum(series.map(s=>Math.max(0,s.v[i]||0))));const mx=Math.max(...tot)*1.08;const bw=(W-pl-10)/labels.length;
  let g='';for(let k=0;k<=4;k++){const y=pt+(H-pt-pb)*(1-k/4);g+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="#262626"/><text x="${pl-6}" y="${y+4}" text-anchor="end">${$k(mx*k/4)}</text>`}
  labels.forEach((lb,i)=>{let base=0;series.forEach((s,j)=>{const v=Math.max(0,s.v[i]||0);if(!v)return;const h=(H-pt-pb)*v/mx;const y=H-pb-(base+h);g+=`<rect x="${pl+i*bw+bw*.15}" width="${bw*.7}" y="${y}" height="${h}" fill="${s.c||PAL[j%PAL.length]}"><title>${s.k} ${lb}: ${$0(s.v[i])}</title></rect>`;base+=h});g+=`<text x="${pl+i*bw+bw/2}" y="${H-8}" text-anchor="middle">${lb}</text>`});
+ g+=hz(id,labels,pl,bw,pt,H-pt-pb,[...series.map((s,j)=>({k:s.k,v:s.v,c:s.c||PAL[j%PAL.length],f:$0})),{k:'Total',v:labels.map((_,i)=>sum(series.map(s=>s.v[i]))),c:'transparent',f:$0,tt:1}]);
  document.getElementById(id).innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="muted" style="margin-top:6px">`+series.map((s,j)=>`<span class="lg" style="background:${s.c||PAL[j%PAL.length]}"></span>${s.k}`).join('')+'</div>'}
 function bars(id,labels,series,line){const W=620,H=300,pl=56,pr=line?44:10,pb=26,pt=10;const all=series.flatMap(s=>s.v).filter(v=>v!=null);const mx=Math.max(0,...all)*1.08,mn=Math.min(0,...all)*1.08;const sy=v=>pt+(H-pt-pb)*(mx-v)/(mx-mn||1);const bw=(W-pl-pr)/labels.length;
  let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,y=sy(v);g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="#262626"/><text x="${pl-6}" y="${y+4}" text-anchor="end">${$k(v)}</text>`}
  const n=series.length;labels.forEach((lb,i)=>{series.forEach((s,j)=>{const v=s.v[i];if(v==null)return;const y0=sy(0),y=sy(v);g+=`<rect x="${pl+i*bw+bw*.12+j*bw*.76/n}" width="${bw*.76/n-2}" y="${Math.min(y,y0)}" height="${Math.abs(y0-y)}" fill="${v<0?'#ff2d3a':s.c}"><title>${s.k} ${lb}: ${$0(v)}</title></rect>`});g+=`<text x="${pl+i*bw+bw/2}" y="${H-8}" text-anchor="middle">${lb}</text>`});
  if(line){const lv=line.v.filter(v=>v!=null),lm=Math.max(...lv)*1.15;const ly=v=>pt+(H-pt-pb)*(1-v/lm);g+=`<polyline fill="none" stroke="${line.c}" stroke-width="2.5" points="${line.v.map((v,i)=>`${pl+i*bw+bw/2},${ly(v)}`).join(' ')}"/>`+line.v.map((v,i)=>`<circle cx="${pl+i*bw+bw/2}" cy="${ly(v)}" r="3.5" fill="${line.c}"><title>${line.k} ${labels[i]}: ${P(v)}</title></circle>`).join('');for(let k=0;k<=4;k++)g+=`<text x="${W-pr+6}" y="${ly(lm*k/4)+4}">${(lm*k/4*100).toFixed(0)}%</text>`}
+ g+=hz(id,labels,pl,bw,pt,H-pt-pb,[...series.map(s=>({k:s.k,v:s.v,c:s.c,f:$0})),...(line?[{k:line.k,v:line.v,c:line.c,f:P}]:[])]);
  document.getElementById(id).innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="muted" style="margin-top:6px">`+series.map(s=>`<span class="lg" style="background:${s.c}"></span>${s.k}`).join('')+(line?`<span class="lg" style="background:${line.c}"></span>${line.k} (right axis)`:'')+'</div>'}
 function yearTable(id,yl,rows,f,tot){table(id,['Line',...yl,...(tot?['10-Yr Total']:[])],rows.map(r=>[L(r.k),...r.v.map(v=>cell(v,r.f||f,1)),...(tot?[r.nt?'<td>—</td>':cell(sum(r.v),r.f||f,1)]:[])]),null)}
 let D;

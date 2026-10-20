@@ -1,0 +1,210 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><link rel="icon" href="data:,"><title>CFA Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050505;--line:#262626;--gold:#e8b923;--txt:#f5f5f5;--muted:#a3a3a3;--red:#ff2d3a;--green:#22c55e;--surf:#141414;--surf2:#1c1c1c;--gb:#e8b92347}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 500px at 50% -200px,#e8b9231a,transparent),var(--bg);color:var(--txt);font:14px Inter,system-ui,sans-serif}
+h1,h2{font-family:Oswald,sans-serif;margin:0;color:var(--gold);text-transform:uppercase}h1{letter-spacing:.08em}
+h2{font-size:18px;margin:28px 0 10px;letter-spacing:.1em;font-weight:600;border-left:3px solid var(--gold);padding-left:10px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+.top{background:linear-gradient(180deg,#0c0c0c,#050505);border-bottom:1px solid var(--gb);box-shadow:0 12px 40px #0000008c;position:relative;padding:18px 0}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,#e8b923,transparent)}
+.muted{color:var(--muted);font-size:12px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.pill{background:var(--surf2);color:#d4d4d4;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font:600 13px Inter,system-ui;cursor:pointer;transition:all .15s}
+.pill:hover{border-color:var(--gold);box-shadow:0 0 18px #e8b92355;transform:translateY(-1px)}
+.pill.on{background:linear-gradient(180deg,#f5c518,#e8b923);color:#050505;border-color:#e8b923;box-shadow:0 0 18px #e8b923d9,0 4px 12px #00000080}
+@media(max-width:600px){.pill{padding:6px 12px;font-size:12px}}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card,.chartbox,#gate form{background:linear-gradient(180deg,#1c1c1c,#141414);border:1px solid var(--gb);border-radius:1rem;padding:14px;transition:transform .2s,box-shadow .2s}
+.card:hover,.chartbox:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 14px 36px #00000073,0 0 0 1px #e8b923}
+.card .l{font:700 11px Inter;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.card .v{font:700 26px Oswald;margin-top:4px}.card.hero .v{font-size:34px}
+.card .s{font-size:12px;color:var(--muted);margin-top:4px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--gb);border-radius:1rem;overflow:hidden;color:var(--txt)}
+th,td{padding:7px 10px;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}
+th{background:#0c0c0c;color:var(--gold);text-transform:uppercase;font:600 11px Inter;letter-spacing:.12em;border-bottom:1px solid var(--gold)}
+td{border-bottom:1px solid #202020}tr:nth-child(even) td{background:#0c0c0c66}tr:hover td{background:#e8b92314}tr.ft td{font-weight:700;background:#0c0c0c;border-top:1px solid var(--gb)}
+tr.dim td{color:var(--muted)}th.t,td.t{text-align:left!important}
+.scroll{overflow-x:auto}.neg{color:var(--red)!important}.pos{color:var(--green)!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.chartbox svg{width:100%;height:auto;display:block}.chartbox text{fill:#a3a3a3;font:11px Inter}
+.lg{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+#gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:9}
+#gate form{padding:28px;text-align:center}
+#gate input{font:18px Inter;padding:8px 12px;border:1px solid var(--gb);border-radius:8px;width:180px;text-align:center;background:#0c0c0c;color:var(--txt)}
+#gate button{margin-left:6px;font:700 15px Inter;padding:9px 16px;border:0;border-radius:999px;background:var(--gold);color:#050505;cursor:pointer}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.fx-in{opacity:0;animation:up .6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes shim{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shim{background:linear-gradient(90deg,#f5c518 0%,#fff3b0 45%,#e8b923 55%,#f5c518 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shim 3.5s linear infinite}
+.shim.neg{background:none;-webkit-text-fill-color:var(--red);animation:none}
+.bar{height:6px;background:#262626;border-radius:9px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;width:0;border-radius:9px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.chartbox rect{transition:y .9s cubic-bezier(.2,.8,.2,1),height .9s cubic-bezier(.2,.8,.2,1)}
+@media(prefers-reduced-motion:reduce){.fx-in{animation:none;opacity:1}.shim{animation:none}.bar i,.chartbox rect{transition:none}.card:hover,.chartbox:hover,.pill:hover{transform:none}}
+
+tr.cur td{background:#e8b92326!important;font-weight:700}
+.info{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--muted);font-size:13px;margin:2px 0 14px}.info b{color:var(--txt);font-weight:600}
+.card .v.sm{font-size:20px}
+</style></head><body>
+<div id="gate"><form onsubmit="go(event)"><h1>CFA Tracker</h1><p class="muted">Enter password</p><input id="pw" type="password" autofocus><button>Open</button><div id="err" class="neg"></div></form></div>
+<div class="top"><div class="wrap"><h1>CFA Tracker</h1><div class="muted">Portfolio cash flow analysis · 10-year projection · deal pro formas · <span id="gen"></span></div></div></div>
+<div class="wrap" id="app" style="display:none">
+<div class="pills" id="tabs" style="margin-top:16px"><button class="pill" data-t="A">Portfolio</button><button class="pill" data-t="D">Dreamland MHP</button><button class="pill" data-t="Z">3900 Dorsey</button></div>
+<section data-s="A"><div class="cards" id="hero"></div>
+<div class="grid2"><div><h2>Gross Income by Source</h2><div class="chartbox" id="cInc"></div></div><div><h2>Net Cash Flow &amp; Cash-on-Cash</h2><div class="chartbox" id="cNet"></div></div></div>
+<h2>Properties</h2><div class="scroll" id="tProps"></div>
+<h2>Income by Source (10-Year)</h2><div class="scroll" id="tInc"></div>
+<h2>Cash Flow by Year</h2><div class="scroll" id="tCF"></div>
+<h2>Monthly Cash Flow by Year</h2><div class="scroll" id="tCFM"></div>
+<h2>Debt Service by Year</h2><div class="scroll" id="tDebt"></div>
+<h2>Loans</h2><div class="scroll" id="tLoans"></div></section>
+<section data-s="D"><div class="cards" id="dc"></div>
+<div class="grid2"><div><h2>NOI vs Net After Debt</h2><div class="chartbox" id="cD"></div></div><div><h2>Monthly Pro Forma</h2><div class="scroll" id="tDM"></div></div></div>
+<h2>10-Year Pro Forma</h2><div class="scroll" id="tDY"></div>
+<h2>Returns &amp; Rent by Year</h2><div class="scroll" id="tDR"></div>
+<h2>Adding Homes Scenario</h2><div class="scroll" id="tDH"></div>
+<h2>Pueblo Area Comps</h2><div class="scroll" id="tComp"></div></section>
+<section data-s="Z"><div class="cards" id="zc"></div>
+<div class="grid2"><div><h2>NOI by Year</h2><div class="chartbox" id="cZ"></div></div><div><h2>Monthly Pro Forma</h2><div class="scroll" id="tZM"></div><h2>CAP Rate by Price</h2><div class="scroll" id="tZC"></div></div></div>
+<h2>10-Year Pro Forma</h2><div class="scroll" id="tZY"></div>
+<h2>Returns by Year</h2><div class="scroll" id="tZR"></div></section>
+<br></div>
+<script>
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(pw){const e=await (await fetch('data.enc.json',{cache:'no-store'})).json();
+ const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+ const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(e.salt),iterations:e.iter,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+ return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(e.iv)},key,b64(e.ct))));}
+const $=v=>v==null||!isFinite(v)?'—':(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $0=v=>v==null||!isFinite(v)?'—':(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:0});
+const $k=v=>(v<0?'-':'')+'$'+(Math.abs(v)>=1e6?(Math.abs(v)/1e6).toFixed(2)+'M':Math.abs(v)>=1e3?(Math.abs(v)/1e3).toFixed(0)+'K':Math.abs(v).toFixed(0));
+const P=v=>v==null||!isFinite(v)?'—':(v*100).toFixed(2)+'%';
+const N=v=>v==null?'—':String(v);
+const sg=v=>v==null?'':v>0?'pos':v<0?'neg':'';
+const sum=a=>a.reduce((s,x)=>s+(x||0),0);
+const fd=s=>{if(!s)return '—';const [y,m,d]=s.split('-').map(Number);return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]+` ${d}, ${y}`};
+function cell(v,f,col){if(v==null)return '<td>—</td>';const t=f(v);return `<td data-v="${v}" class="${col?sg(v):''}">${t}</td>`}
+function table(id,head,rows,foot){const h='<table><thead><tr>'+head.map((x,i)=>`<th${i?'':' class="t"'}>${x}</th>`).join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.join('')+'</tr>').join('')+'</tbody>'+(foot?'<tfoot><tr class="ft">'+foot.join('')+'</tr></tfoot>':'')+'</table>';document.getElementById(id).innerHTML=h}
+const L=s=>`<td class="t">${s}</td>`;
+function card(l,v,s,c){return `<div class="card fx-in"><div class="l">${l}</div><div class="v ${c||''}">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`}
+const PAL=['#e8b923','#f97316','#38bdf8','#22c55e','#a855f7','#ef4444','#14b8a6','#eab308','#ec4899','#84cc16','#6366f1','#f43f5e'];
+function stack(id,labels,series){const W=620,H=300,pl=56,pb=26,pt=10;const tot=labels.map((_,i)=>sum(series.map(s=>Math.max(0,s.v[i]||0))));const mx=Math.max(...tot)*1.08;const bw=(W-pl-10)/labels.length;
+ let g='';for(let k=0;k<=4;k++){const y=pt+(H-pt-pb)*(1-k/4);g+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="#262626"/><text x="${pl-6}" y="${y+4}" text-anchor="end">${$k(mx*k/4)}</text>`}
+ labels.forEach((lb,i)=>{let base=0;series.forEach((s,j)=>{const v=Math.max(0,s.v[i]||0);if(!v)return;const h=(H-pt-pb)*v/mx;const y=H-pb-(base+h);g+=`<rect x="${pl+i*bw+bw*.15}" width="${bw*.7}" y="${y}" height="${h}" fill="${s.c||PAL[j%PAL.length]}"><title>${s.k} ${lb}: ${$0(s.v[i])}</title></rect>`;base+=h});g+=`<text x="${pl+i*bw+bw/2}" y="${H-8}" text-anchor="middle">${lb}</text>`});
+ document.getElementById(id).innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="muted" style="margin-top:6px">`+series.map((s,j)=>`<span class="lg" style="background:${s.c||PAL[j%PAL.length]}"></span>${s.k}`).join('')+'</div>'}
+function bars(id,labels,series,line){const W=620,H=300,pl=56,pr=line?44:10,pb=26,pt=10;const all=series.flatMap(s=>s.v).filter(v=>v!=null);const mx=Math.max(0,...all)*1.08,mn=Math.min(0,...all)*1.08;const sy=v=>pt+(H-pt-pb)*(mx-v)/(mx-mn||1);const bw=(W-pl-pr)/labels.length;
+ let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,y=sy(v);g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="#262626"/><text x="${pl-6}" y="${y+4}" text-anchor="end">${$k(v)}</text>`}
+ const n=series.length;labels.forEach((lb,i)=>{series.forEach((s,j)=>{const v=s.v[i];if(v==null)return;const y0=sy(0),y=sy(v);g+=`<rect x="${pl+i*bw+bw*.12+j*bw*.76/n}" width="${bw*.76/n-2}" y="${Math.min(y,y0)}" height="${Math.abs(y0-y)}" fill="${v<0?'#ff2d3a':s.c}"><title>${s.k} ${lb}: ${$0(v)}</title></rect>`});g+=`<text x="${pl+i*bw+bw/2}" y="${H-8}" text-anchor="middle">${lb}</text>`});
+ if(line){const lv=line.v.filter(v=>v!=null),lm=Math.max(...lv)*1.15;const ly=v=>pt+(H-pt-pb)*(1-v/lm);g+=`<polyline fill="none" stroke="${line.c}" stroke-width="2.5" points="${line.v.map((v,i)=>`${pl+i*bw+bw/2},${ly(v)}`).join(' ')}"/>`+line.v.map((v,i)=>`<circle cx="${pl+i*bw+bw/2}" cy="${ly(v)}" r="3.5" fill="${line.c}"><title>${line.k} ${labels[i]}: ${P(v)}</title></circle>`).join('');for(let k=0;k<=4;k++)g+=`<text x="${W-pr+6}" y="${ly(lm*k/4)+4}">${(lm*k/4*100).toFixed(0)}%</text>`}
+ document.getElementById(id).innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="muted" style="margin-top:6px">`+series.map(s=>`<span class="lg" style="background:${s.c}"></span>${s.k}`).join('')+(line?`<span class="lg" style="background:${line.c}"></span>${line.k} (right axis)`:'')+'</div>'}
+function yearTable(id,yl,rows,f,tot){table(id,['Line',...yl,...(tot?['10-Yr Total']:[])],rows.map(r=>[L(r.k),...r.v.map(v=>cell(v,r.f||f,1)),...(tot?[r.nt?'<td>—</td>':cell(sum(r.v),r.f||f,1)]:[])]),null)}
+let D;
+function render(){const c=D.cf,Y=D.years,T=D.tot;document.getElementById('gen').textContent='Updated '+D.gen;
+ document.getElementById('hero').innerHTML=card('Acquisition Total',$0(T.acq),'Down '+$0(T.down)+' · Loans '+$0(T.loan),'shim')+card('Portfolio NOI',$0(T.noi),'Net monthly '+$(T.net_m),'pos')+card(Y[0]+' Gross Income',$0(c.gross[0]),Y[9]+': '+$0(c.gross[9]),'pos')+card(Y[0]+' Net Cash Flow',$0(c.net[0]),'Monthly net min '+$(c.mnet[0]),'pos')
+ +card('10-Yr Net Cash Flow',$0(D.net10),Y[0]+'–'+Y[9]+' · with principal '+$0(D.cfp10),'pos')+card('Cash on Cash',P(c.coc[0]),Y[9]+': '+P(c.coc[9]),'pos')+card('Daily Net Income',$(D.daily),'')+card('Loan Balances',$0(sum(D.loans.map(l=>l.bal))),D.loans.map(l=>l.k+' '+$k(l.bal)).join(' · '),'neg')+card('LTV Portfolio',P(T.ltv),'Losses on books '+$k(c.loss[0]));
+ stack('cInc',Y,D.income.map(x=>({k:x.k,v:x.v})));
+ bars('cNet',Y,[{k:'Net cash flow',v:c.net,c:'#22c55e'},{k:'Debt service',v:c.debt,c:'#ff2d3a'}],{k:'Cash on cash',v:c.coc,c:'#e8b923'});
+ table('tProps',['Property','Acquisition','Down Payment','Loan','Monthly PMT','NOI','Net Monthly','Rent Increase','Freq','Interest','CAP Rate','Amort (yrs)','Term (yrs)','LTV'],D.props.map(p=>[L(p.name),cell(p.acq,$0),cell(p.down,$0),cell(p.loan,$0),cell(p.pmt,$,1),cell(p.noi,$0,1),cell(p.net_m,$,1),cell(p.inc,P),`<td class="t">${p.inc_freq||'—'}</td>`,cell(p.rate,P),cell(p.cap,P),cell(p.amort,N),cell(p.term,N),cell(p.ltv,P)]),
+  [L('TOTAL'),cell(T.acq,$0),cell(T.down,$0),cell(T.loan,$0),cell(T.pmt,$,1),cell(T.noi,$0,1),cell(T.net_m,$,1),'<td></td>','<td></td>','<td></td>','<td></td>','<td></td>','<td></td>',cell(T.ltv,P)]);
+ table('tInc',['Source',...Y,'10-Yr Total'],D.income.map(x=>[L(x.k),...x.v.map(v=>cell(v,$0)),cell(sum(x.v),$0)]),[L('Gross Income'),...c.gross.map(v=>cell(v,$0,1)),cell(sum(c.gross),$0,1)]);
+ const A=[['Gross Income','gross',$0],['Total Debt Service','debt',$0],['Annual Principal Paid','princ',$0],['Year-End Loan Balance','bal',$0],['CF + Principal Reduction','cfp',$0],['Net Cash Flow','net',$0],['Cash on Cash','coc',P],['Total ROI','roi',P],['Losses on Books Remaining','loss',$0]];
+ const tot=k=>['gross','debt','princ','cfp','net'].includes(k);
+ table('tCF',['Year',...A.map(a=>a[0])],Y.map((y,i)=>[`<td class="t" data-v="${y}">${y}</td>`,...A.map(a=>cell(c[a[1]][i],a[2],1))]),[L('TOTAL'),...A.map(a=>tot(a[1])?cell(a[1]=='net'?D.net10:a[1]=='cfp'?D.cfp10:sum(c[a[1]]),$0,1):'<td>—</td>')]);
+ const B=[['Monthly Cash Flow','mcf'],['Monthly Debt','mdebt'],['Monthly Net (minimum)','mnet'],['CF + Principal (Monthly)','mcfp'],['Net Total Cash Flow (Monthly)','mtot']];
+ table('tCFM',['Year',...B.map(a=>a[0])],Y.map((y,i)=>[`<td class="t" data-v="${y}">${y}</td>`,...B.map(a=>cell(c[a[1]][i],$,1))]),null);
+ table('tDebt',['Line',...Y,'10-Yr Total'],D.debt.map(x=>[L(x.k),...x.v.map(v=>cell(v,$0,1)),cell(sum(x.v),$0,1)]),[L('Total Debt Service'),...c.debt.map(v=>cell(v,$0,1)),cell(sum(c.debt),$0,1)]);
+ table('tLoans',['Loan','Balance','Expiration','Months Remaining','Annual Paydown'],D.loans.map(l=>[L(l.k),cell(l.bal,$0),`<td data-v="${l.exp}">${fd(l.exp)}</td>`,cell(l.mo,N),cell(l.pay,$0)]),[L('TOTAL'),cell(sum(D.loans.map(l=>l.bal)),$0),'<td></td>','<td></td>',cell(sum(D.loans.map(l=>l.pay)),$0)]);
+ // Dreamland
+ const d=D.dream,k=d.k,YL=[...Array(10)].map((_,i)=>'Yr '+(i+1));
+ document.getElementById('dc').innerHTML=card('Price (CAP basis)',$0(d.price),'32 homes on site · '+$0(d.ppu)+' per home','shim')+card('NOI Year 1',$0(k.noi[0]),'Year 10: '+$0(k.noi[9]),'pos')+card('CAP Rate Yr 1',P(d.cap[0]),'Year 10: '+P(d.cap[9]))+card('Net After Debt Yr 1',$0(k.net[0]),'Monthly '+$(k.netm[0]),'pos')+card('Cash on Cash Yr 1',P(k.coc[0]),'on '+$0(d.eq)+' (IO loan)','pos')+card('Monthly Pro Forma NOI',$(d.noim),'Annual '+$0(d.noia))+card('Mortgage Yr 1',$0(k.mort[0]),k.mort_lbl,'neg')+card('Total ROI Yr 10',P(k.roi[9]),'Year 1: '+P(k.roi[0]),'pos');
+ bars('cD',YL,[{k:'NOI',v:k.noi,c:'#e8b923'},{k:'Net after debt',v:k.net,c:'#22c55e'}]);
+ table('tDM',['Item','Monthly'],d.m.map(x=>[L(x.k),cell(x.v,$,1)]),[L('NOI Monthly'),cell(d.noim,$,1)]);
+ yearTable('tDY',YL,[...d.lines,{k:'Expenses',v:k.exp},{k:k.mort_lbl,v:k.mort}],$0,1);
+ document.querySelector('#tDY table').insertAdjacentHTML('beforeend','<tfoot><tr class="ft">'+[L('Net after debt expense'),...k.net.map(v=>cell(v,$0,1)),cell(sum(k.net),$0,1)].join('')+'</tr></tfoot>');
+ yearTable('tDR',YL,[{k:'NOI Annually',v:k.noi},{k:'NOI Monthly',v:k.noim,f:$},{k:'Net Monthly',v:k.netm,f:$},{k:'Expense Ratio',v:k.er,f:P},{k:'CAP Rate at '+$0(d.price),v:d.cap,f:P},{k:'IO Loan Cash on Cash ('+$0(d.eq)+')',v:k.coc,f:P},{k:'Total ROI',v:k.roi,f:P},{k:'32 homes avg rent',v:d.rent,f:$}],$0,0);
+ yearTable('tDH',YL,[{k:'New Home Expense',v:k.nhe},{k:'New home income',v:k.nhi},{k:'NOI with adding houses',v:k.noih},{k:'CAP reinvestment',v:k.capr}],$0,0);
+ table('tComp',['Park','Address','Rent',...d.chdr],d.comps.map(x=>[L(x.k),`<td class="t">${x.addr||'—'}</td>`,`<td class="t">${x.rent||'—'}</td>`,...(x.f||[null,null,null,null]).map(v=>`<td class="t">${v||'—'}</td>`)]),null);
+ // Dorsey
+ const z=D.dorsey,zk=z.k;
+ document.getElementById('zc').innerHTML=card('NOI Monthly',$(z.noim),'Annual '+$0(z.noia),'shim')+card('NOI Year 1',$0(zk.noi[0]),'Year 10: '+$0(zk.noi[9]),'pos')+card('CAP at $650K Yr 1',P(zk.cap[0]),'No capex: '+P(z.nocap))+card('Cash on Cash Yr 1',P(zk.coc[0]),'Year 10: '+P(zk.coc[9]),'pos')+card(zk.ret_lbl+' Yr 1',$0(zk.ret[0]),'10-yr total '+$0(sum(zk.ret)),'pos')+card('10-Yr NOI',$0(sum(zk.noi)),'');
+ bars('cZ',YL,[{k:'NOI',v:zk.noi,c:'#e8b923'}],{k:'Cash on cash',v:zk.coc,c:'#22c55e'});
+ table('tZM',['Item','Monthly'],z.m.map(x=>[L(x.k),cell(x.v,$,1)]),[L('NOI Monthly'),cell(z.noim,$,1)]);
+ table('tZC',['Price','CAP Rate'],z.caps.map(x=>[`<td class="t" data-v="${x.p}">${$0(x.p)}</td>`,cell(x.c,P)]),null);
+ yearTable('tZY',YL,z.lines,$0,1);
+ document.querySelector('#tZY table').insertAdjacentHTML('beforeend','<tfoot><tr class="ft">'+[L('NOI'),...zk.noi.map(v=>cell(v,$0,1)),cell(sum(zk.noi),$0,1)].join('')+'</tr></tfoot>');
+ yearTable('tZR',YL,[{k:'CAP at $650K',v:zk.cap,f:P},{k:zk.ret_lbl,v:zk.ret},{k:'Cash on Cash',v:zk.coc,f:P},{k:'MH Monthly Rate',v:zk.mh}],$0,0);
+}
+function tab(t){document.querySelectorAll('#tabs .pill').forEach(b=>b.classList.toggle('on',b.dataset.t==t));document.querySelectorAll('section[data-s]').forEach(s=>s.style.display=s.dataset.s==t?'':'none')}
+document.getElementById('tabs').onclick=e=>{if(e.target.dataset.t)tab(e.target.dataset.t)};
+async function go(e){e.preventDefault();try{const pw=document.getElementById('pw').value;D=await decrypt(pw);sessionStorage.cfapw=pw;}catch(x){document.getElementById('err').textContent='Wrong password';return;}
+ document.getElementById('gate').remove();document.getElementById('app').style.display='';render();tab('A');}
+if(sessionStorage.cfapw){document.getElementById('pw').value=sessionStorage.cfapw;go(new Event('submit'));}
+</script><!--SORTABLE-START--><script>
+/* Shared sortable tables (Grok Bot trackers). Click any header: asc/desc toggle with ▲/▼.
+   Works on dynamically rendered tables via event delegation. Totals (tfoot, .total/.ft/.tot rows,
+   or first cell TOTAL/ALL-TIME/GRAND) stay pinned at bottom. Group-label rows (fewer cells / colspan)
+   keep their members: sorting happens within each group. Uses td[data-v] when present.
+   Skip: th with own onclick, th.nosort, or table[data-nosort]. */
+(function(){
+  if(window.__sortableShared)return;window.__sortableShared=1;
+  var st=document.createElement('style');
+  st.textContent='table:not([data-nosort]) th:not(.nosort){cursor:pointer;user-select:none}th .srt-ar{font-size:.8em;opacity:.85;margin-left:3px}';
+  (document.head||document.documentElement).appendChild(st);
+  var MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+  function key(cell){
+    if(!cell)return null;
+    var raw=cell.dataset&&cell.dataset.v!=null?cell.dataset.v:cell.textContent;
+    var s=String(raw).replace(/[▲▼]/g,'').trim();
+    if(!s||s==='—'||s==='-'||s==='–'||/^n\/?a$/i.test(s))return null;
+    var m;
+    if((m=s.match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/)))return {n:Date.UTC(+m[1],+m[2]-1,+(m[3]||1))};
+    if((m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/))){var y=+m[3];if(y<100)y+=2000;return {n:Date.UTC(y,+m[1]-1,+m[2])};}
+    if((m=s.match(/^([A-Za-z]{3})[a-z]*\.? (\d{1,2}),? (\d{4})$/))&&MON[m[1].toLowerCase()])return {n:Date.UTC(+m[3],MON[m[1].toLowerCase()]-1,+m[2])};
+    if((m=s.match(/^([A-Za-z]{3})[a-z]* (\d{4})$/))&&MON[m[1].toLowerCase()])return {n:Date.UTC(+m[2],MON[m[1].toLowerCase()]-1,1)};
+    if((m=s.match(/^Q([1-4]) (\d{4})$/i)))return {n:Date.UTC(+m[2],(+m[1]-1)*3,1)};
+    var t=s.replace(/[$,%x×\s]|USD/gi,'').replace(/^\+/,'').replace(/[−–]/g,'-');
+    var neg=/^\(.*\)$/.test(t);if(neg)t=t.slice(1,-1);
+    var mult=1;if((m=t.match(/^(-?[\d.]+)([KMB])$/i))){t=m[1];mult={k:1e3,m:1e6,b:1e9}[m[2].toLowerCase()];}
+    if(/^-?\d*\.?\d+$/.test(t))return {n:parseFloat(t)*mult*(neg?-1:1)};
+    return {s:s.toLowerCase()};
+  }
+  function pinned(r){
+    if(r.parentElement&&r.parentElement.tagName==='TFOOT')return true;
+    if(/(^|\s)(total|totals|ft|tot|sum|grand|pinned)(\s|$)/i.test(r.className))return true;
+    var c=r.cells[0];return !!c&&/^\s*(TOTAL|TOTALS|ALL-TIME|GRAND TOTAL)\b/i.test(c.textContent);
+  }
+  document.addEventListener('click',function(e){
+    var th=e.target.closest&&e.target.closest('th');if(!th||th.onclick||th.classList.contains('nosort'))return;
+    var tb=th.closest('table');if(!tb||tb.hasAttribute('data-nosort'))return;
+    var hr=th.parentElement;if(hr.parentElement.tagName==='TFOOT')return;
+    var ci=0;for(var k=0;k<hr.cells.length&&hr.cells[k]!==th;k++)ci+=hr.cells[k].colSpan||1;
+    var ncol=0;for(k=0;k<hr.cells.length;k++)ncol+=hr.cells[k].colSpan||1;
+    var dir=th.dataset.sdir==='asc'?'desc':'asc',m=dir==='asc'?1:-1;
+    tb.querySelectorAll('th').forEach(function(x){delete x.dataset.sdir;var a=x.querySelector('.srt-ar');if(a)a.remove();});
+    th.dataset.sdir=dir;var ar=document.createElement('span');ar.className='srt-ar';ar.textContent=dir==='asc'?'▲':'▼';th.appendChild(ar);
+    var bodies=tb.tBodies.length?[].slice.call(tb.tBodies):[tb];
+    bodies.forEach(function(body){
+      var all=[].slice.call(body.rows).filter(function(r){return r!==hr&&!(r.cells.length&&r.cells[0].tagName==='TH'&&!r.querySelector('td'));});
+      var pins=[],groups=[{head:null,rows:[]}];
+      all.forEach(function(r){
+        if(pinned(r)){pins.push(r);return;}
+        var w=0;for(var j=0;j<r.cells.length;j++)w+=r.cells[j].colSpan||1;
+        if(r.cells.length===1&&ncol>1)groups.push({head:r,rows:[]});else groups[groups.length-1].rows.push(r);
+      });
+      function cellAt(r){var x=0;for(var j=0;j<r.cells.length;j++){if(x===ci)return r.cells[j];x+=r.cells[j].colSpan||1;}return null;}
+      groups.forEach(function(g){
+        g.rows.sort(function(a,b){var A=key(cellAt(a)),B=key(cellAt(b));
+          if(!A&&!B)return 0;if(!A)return 1;if(!B)return -1;
+          if(A.n!=null&&B.n!=null)return (A.n-B.n)*m;
+          return String(A.s!=null?A.s:A.n).localeCompare(String(B.s!=null?B.s:B.n),undefined,{numeric:true})*m;});
+        if(g.head)body.appendChild(g.head);g.rows.forEach(function(r){body.appendChild(r);});
+      });
+      pins.forEach(function(r){body.appendChild(r);});
+    });
+  },false);
+})();
+
+</script><!--SORTABLE-END-->
+</body></html>

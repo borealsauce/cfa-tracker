@@ -115,7 +115,7 @@ function bars(id,labels,series,line){const W=620,H=300,pl=56,pr=line?44:10,pb=26
 function yearTable(id,yl,rows,f,tot){table(id,['Line',...yl,...(tot?['10-Yr Total']:[])],rows.map(r=>[L(r.k),...r.v.map(v=>cell(v,r.f||f,1)),...(tot?[r.nt?'<td>—</td>':cell(sum(r.v),r.f||f,1)]:[])]),null)}
 let D;
 function render(){const c=D.cf,Y=D.years,T=D.tot;document.getElementById('gen').textContent='Updated '+D.gen;
- document.getElementById('hero').innerHTML=card('Acquisition Total',$0(T.acq),'Down '+$0(T.down)+' · Loans '+$0(T.loan),'shim')+card('Portfolio NOI',$0(T.noi),'Net monthly '+$(T.net_m),'pos')+card(Y[0]+' Gross Income',$0(c.gross[0]),Y[9]+': '+$0(c.gross[9]),'pos')+card(Y[0]+' Net Cash Flow',$0(c.net[0]),'Monthly net min '+$(c.mnet[0]),'pos')
+ document.getElementById('hero').innerHTML=card(Y[0]+' Monthly Net Cash Flow',$(c.net[0]/12),'Annual net '+$0(c.net[0])+' ÷ 12','pos')+card('Acquisition Total',$0(T.acq),'Down '+$0(T.down)+' · Loans '+$0(T.loan),'shim')+card('Portfolio NOI',$0(T.noi),'Net monthly '+$(T.net_m),'pos')+card(Y[0]+' Gross Income',$0(c.gross[0]),Y[9]+': '+$0(c.gross[9]),'pos')+card(Y[0]+' Net Cash Flow',$0(c.net[0]),'Monthly net min '+$(c.mnet[0]),'pos')
  +card('10-Yr Net Cash Flow',$0(D.net10),Y[0]+'–'+Y[9]+' · with principal '+$0(D.cfp10),'pos')+card('Cash on Cash',P(c.coc[0]),Y[9]+': '+P(c.coc[9]),'pos')+card('Daily Net Income',$(D.daily),'')+card('Loan Balances',$0(sum(D.loans.map(l=>l.bal))),D.loans.map(l=>l.k+' '+$k(l.bal)).join(' · '),'neg')+card('LTV Portfolio',P(T.ltv),'Losses on books '+$k(c.loss[0]));
  stack('cInc',Y,D.income.map(x=>({k:x.k,v:x.v})));
  bars('cNet',Y,[{k:'Net cash flow',v:c.net,c:'#22c55e'},{k:'Debt service',v:c.debt,c:'#ff2d3a'}],{k:'Cash on cash',v:c.coc,c:'#e8b923'});

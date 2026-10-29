@@ -117,6 +117,13 @@ let D;
 function render(){const c=D.cf,Y=D.years,T=D.tot;document.getElementById('gen').textContent='Updated '+D.gen;
  document.getElementById('hero').innerHTML=card(Y[0]+' Monthly Net Cash Flow',$(c.net[0]/12),'Annual net '+$0(c.net[0])+' ÷ 12','pos')+card('Acquisition Total',$0(T.acq),'Down '+$0(T.down)+' · Loans '+$0(T.loan),'shim')+card('Portfolio NOI',$0(T.noi),'Net monthly '+$(T.net_m),'pos')+card(Y[0]+' Gross Income',$0(c.gross[0]),Y[9]+': '+$0(c.gross[9]),'pos')+card(Y[0]+' Net Cash Flow',$0(c.net[0]),'Monthly net min '+$(c.mnet[0]),'pos')
  +card('10-Yr Net Cash Flow',$0(D.net10),Y[0]+'–'+Y[9]+' · with principal '+$0(D.cfp10),'pos')+card('Cash on Cash',P(c.coc[0]),Y[9]+': '+P(c.coc[9]),'pos')+card('Daily Net Income',$(D.daily),'')+card('Loan Balances',$0(sum(D.loans.map(l=>l.bal))),D.loans.map(l=>l.k+' '+$k(l.bal)).join(' · '),'neg')+card('LTV Portfolio',P(T.ltv),'Losses on books '+$k(c.loss[0]));
+ {const DS={popeye:3670.17,ross:166.67};const dsOf=k=>{for(const p in DS)if(k.toLowerCase().includes(p))return DS[p];return 0};
+ const g=(re,ex)=>D.income.filter(x=>re.test(x.k)&&!(ex&&ex.test(x.k))&&x.v[0]).map(x=>[x.k.replace(/\s*\(.*\)$/,''),x.v[0],x.v[0]/12-dsOf(x.k)]);
+ const grp=(t,items,note,dsl)=>{const tt=sum(items.map(i=>i[1])),mn=sum(items.map(i=>i[2]));
+  return card(t,$0(tt),`<b>Monthly net ${$0(mn)}</b> (${$0(mn*12)}/yr net)<br>`+items.map(i=>i[0]+': '+$0(i[1])+'/yr · '+$0(i[2])+'/mo net').join('<br>')+'<br><i>'+note+'</i>','pos')};
+ const nnn=g(/popeye|parma|ross/i);
+ const syn=[...g(/^elevate/i),...g(/^bvg/i),...g(/boa vida/i),...g(/^lvpe/i),...g(/^billings/i,/refi/i)];
+ document.getElementById('hero').insertAdjacentHTML('afterbegin',grp(Y[0]+' Projected NNN Income (gross)',nnn,'Net after Popeyes mortgage $3,670.17/mo and 5 Ross expenses $166.67/mo; Parma no debt')+grp(Y[0]+' Projected Syndication Income',syn,'No debt service, so net = gross ÷ 12. Billings MT counted as BVG SBI TIC syndication'));}
  stack('cInc',Y,D.income.map(x=>({k:x.k,v:x.v})));
  bars('cNet',Y,[{k:'Net cash flow',v:c.net,c:'#22c55e'},{k:'Debt service',v:c.debt,c:'#ff2d3a'}],{k:'Cash on cash',v:c.coc,c:'#e8b923'});
  table('tProps',['Property','Acquisition','Down Payment','Loan','Loan Payment Monthly','NOI','Net Monthly','Rent Increase','Freq','Interest','CAP Rate','Amort (yrs)','Term (yrs)','LTV'],D.props.map(p=>[L(p.name),cell(p.acq,$0),cell(p.down,$0),cell(p.loan,$0),cell(p.pmt,$,1),cell(p.noi,$0,1),cell(p.net_m,$,1),cell(p.inc,P),`<td class="t">${p.inc_freq||'—'}</td>`,cell(p.rate,P),cell(p.cap,P),cell(p.amort,N),cell(p.term,N),cell(p.ltv,P)]),

@@ -123,7 +123,16 @@ function render(){const c=D.cf,Y=D.years,T=D.tot;document.getElementById('gen').
   return card(t,$0(tt),`<b>Monthly net ${$0(mn)}</b> (${$0(mn*12)}/yr net)<br>`+items.map(i=>i[0]+': '+$0(i[1])+'/yr · '+$0(i[2])+'/mo net').join('<br>')+'<br><i>'+note+'</i>','pos')};
  const nnn=g(/popeye|parma|ross/i);
  const syn=[...g(/^elevate/i),...g(/^bvg/i),...g(/boa vida/i),...g(/^lvpe/i),...g(/^billings/i,/refi/i)];
- document.getElementById('hero').insertAdjacentHTML('afterbegin',grp(Y[0]+' Projected NNN Income (gross)',nnn,'Net after Popeyes mortgage $3,670.17/mo and 5 Ross expenses $166.67/mo; Parma no debt')+grp(Y[0]+' Projected Syndication Income',syn,'No debt service, so net = gross ÷ 12. Billings MT counted as BVG SBI TIC syndication'));}
+ const nre=/popeye|parma|ross/i,sre=/^(elevate|bvg|boa vida|lvpe|billings(?!.*refi))/i;
+ const H=document.getElementById('hero');
+ if(!document.getElementById('grpSel')){H.insertAdjacentHTML('beforebegin','<div style="margin:0 0 10px"><label style="font-weight:600;margin-right:8px">Projected income:</label><select id="grpSel" style="background:#1b1f27;color:inherit;border:1px solid #444;border-radius:6px;padding:4px 8px"><option value="all">All</option><option value="nnn">NNN only</option><option value="syn">Syndicated only</option></select></div>');}
+ const ap=()=>{const v=document.getElementById('grpSel').value;
+  H.querySelectorAll('[data-grp]').forEach(e=>e.style.display=(v==='all'||e.dataset.grp===v)?'':'none');
+  document.querySelectorAll('#tInc tbody tr').forEach(tr=>{const k=(tr.cells[0]||{}).textContent||'';if(/gross income/i.test(k)){tr.style.display='';return}
+   tr.style.display=v==='all'?'':(v==='nnn'?nre:sre).test(k.trim())?'':'none'})};
+ document.getElementById('grpSel').onchange=ap;setTimeout(ap,0);
+ const W=(h,gk)=>h.replace('<div class="card','<div data-grp="'+gk+'" class="card');
+ H.insertAdjacentHTML('afterbegin',W(grp(Y[0]+' Projected NNN Income (gross)',nnn,'Net after Popeyes mortgage $3,670.17/mo and 5 Ross expenses $166.67/mo; Parma no debt'),'nnn')+W(grp(Y[0]+' Projected Syndication Income',syn,'No debt service, so net = gross ÷ 12. Billings MT counted as BVG SBI TIC syndication'),'syn'));}
  stack('cInc',Y,D.income.map(x=>({k:x.k,v:x.v})));
  bars('cNet',Y,[{k:'Net cash flow',v:c.net,c:'#22c55e'},{k:'Debt service',v:c.debt,c:'#ff2d3a'}],{k:'Cash on cash',v:c.coc,c:'#e8b923'});
  table('tProps',['Property','Acquisition','Down Payment','Loan','Loan Payment Monthly','NOI','Net Monthly','Rent Increase','Freq','Interest','CAP Rate','Amort (yrs)','Term (yrs)','LTV'],D.props.map(p=>[L(p.name),cell(p.acq,$0),cell(p.down,$0),cell(p.loan,$0),cell(p.pmt,$,1),cell(p.noi,$0,1),cell(p.net_m,$,1),cell(p.inc,P),`<td class="t">${p.inc_freq||'—'}</td>`,cell(p.rate,P),cell(p.cap,P),cell(p.amort,N),cell(p.term,N),cell(p.ltv,P)]),

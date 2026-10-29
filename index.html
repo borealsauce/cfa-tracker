@@ -52,7 +52,7 @@ tr.cur td{background:#e8b92326!important;font-weight:700}
 <div id="gate"><form onsubmit="go(event)"><h1>CFA Tracker</h1><p class="muted">Enter password</p><input id="pw" type="password" autofocus><button>Open</button><div id="err" class="neg"></div></form></div>
 <div class="top"><div class="wrap"><h1>CFA Tracker</h1><div class="muted">Portfolio cash flow analysis · 10-year projection · deal pro formas · <span id="gen"></span></div></div></div>
 <div class="wrap" id="app" style="display:none">
-<div class="pills" id="tabs" style="margin-top:16px"><button class="pill" data-t="A">Portfolio</button><button class="pill" data-t="D">Dreamland MHP</button><button class="pill" data-t="Z">3900 Dorsey</button></div>
+<div class="pills" id="tabs" style="margin-top:16px"><button class="pill" data-t="A">Portfolio</button><button class="pill" data-t="D">Dreamland MHP</button><button class="pill" data-t="Z">3900 Dorsey</button><button class="pill" data-t="S">Syndication</button><button class="pill" data-t="N">NNN Income</button></div>
 <section data-s="A"><div class="cards" id="hero"></div>
 <div class="grid2"><div><h2>Gross Income by Source</h2><div class="chartbox" id="cInc"></div></div><div><h2>Net Cash Flow &amp; Cash-on-Cash</h2><div class="chartbox" id="cNet"></div></div></div>
 <h2>Properties</h2><div class="scroll" id="tProps"></div>
@@ -61,6 +61,8 @@ tr.cur td{background:#e8b92326!important;font-weight:700}
 <h2>Monthly Cash Flow by Year</h2><div class="scroll" id="tCFM"></div>
 <h2>Debt Service by Year</h2><div class="scroll" id="tDebt"></div>
 <h2>Loans</h2><div class="scroll" id="tLoans"></div></section>
+<section data-s="S"><div class="cards" id="sc"></div><div class="tw" id="tS"></div></section>
+<section data-s="N"><div class="cards" id="nc"></div><div class="tw" id="tN"></div></section>
 <section data-s="D"><div class="cards" id="dc"></div>
 <div class="grid2"><div><h2>NOI vs Net After Debt</h2><div class="chartbox" id="cD"></div></div><div><h2>Monthly Pro Forma</h2><div class="scroll" id="tDM"></div></div></div>
 <h2>10-Year Pro Forma</h2><div class="scroll" id="tDY"></div>
@@ -123,15 +125,12 @@ function render(){const c=D.cf,Y=D.years,T=D.tot;document.getElementById('gen').
   return card(t,$0(tt),`<b>Monthly net ${$0(mn)}</b> (${$0(mn*12)}/yr net)<br>`+items.map(i=>i[0]+': '+$0(i[1])+'/yr · '+$0(i[2])+'/mo net').join('<br>')+'<br><i>'+note+'</i>','pos')};
  const nnn=g(/popeye|parma|ross/i);
  const syn=[...g(/^elevate/i),...g(/^bvg/i),...g(/boa vida/i),...g(/^lvpe/i),...g(/^billings/i,/refi/i)];
- const nre=/popeye|parma|ross/i,sre=/^(elevate|bvg|boa vida|lvpe|billings(?!.*refi))/i;
- const H=document.getElementById('hero');
- if(!document.getElementById('grpSel')){H.insertAdjacentHTML('beforebegin','<div style="margin:0 0 10px"><label style="font-weight:600;margin-right:8px">Projected income:</label><select id="grpSel" style="background:#1b1f27;color:inherit;border:1px solid #444;border-radius:6px;padding:4px 8px"><option value="all">All</option><option value="nnn">NNN only</option><option value="syn">Syndicated only</option></select></div>');}
- const ap=()=>{const v=document.getElementById('grpSel').value;
-  H.querySelectorAll('[data-grp]').forEach(e=>e.style.display=(v==='all'||e.dataset.grp===v)?'':'none');
-  document.querySelectorAll('#tInc tbody tr').forEach(tr=>{const k=(tr.cells[0]||{}).textContent||'';if(/gross income/i.test(k)){tr.style.display='';return}
-   tr.style.display=v==='all'?'':(v==='nnn'?nre:sre).test(k.trim())?'':'none'})};
- document.getElementById('grpSel').onchange=ap;setTimeout(ap,0);
- const W=(h,gk)=>h.replace('<div class="card','<div data-grp="'+gk+'" class="card');
+ const H=document.getElementById('hero');const W=(h,gk)=>h;
+ const view=(cid,tid,items,lbl,note)=>{const tt=sum(items.map(i=>i[1])),mn=sum(items.map(i=>i[2]));
+  document.getElementById(cid).innerHTML=card(Y[0]+' Projected '+lbl+' (full year)',$0(tt),'Gross','pos')+card('Monthly Net',$(mn),$0(mn*12)+'/yr net · '+note,'pos');
+  table(tid,['Component',Y[0]+' Full Year','Monthly Gross','Monthly Net'],items.map(i=>[L(i[0]),cell(i[1],$0),cell(i[1]/12,$),cell(i[2],$)]),[L('TOTAL'),cell(tt,$0,1),cell(tt/12,$,1),cell(mn,$,1)])};
+ view('nc','tN',nnn,'NNN Income','after Popeyes mortgage $3,670.17/mo & 5 Ross expenses $166.67/mo');
+ view('sc','tS',syn,'Syndication Income','no debt service; Billings MT = BVG SBI TIC');
  H.insertAdjacentHTML('afterbegin',W(grp(Y[0]+' Projected NNN Income (gross)',nnn,'Net after Popeyes mortgage $3,670.17/mo and 5 Ross expenses $166.67/mo; Parma no debt'),'nnn')+W(grp(Y[0]+' Projected Syndication Income',syn,'No debt service, so net = gross ÷ 12. Billings MT counted as BVG SBI TIC syndication'),'syn'));}
  stack('cInc',Y,D.income.map(x=>({k:x.k,v:x.v})));
  bars('cNet',Y,[{k:'Net cash flow',v:c.net,c:'#22c55e'},{k:'Debt service',v:c.debt,c:'#ff2d3a'}],{k:'Cash on cash',v:c.coc,c:'#e8b923'});
